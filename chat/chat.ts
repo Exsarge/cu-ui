@@ -307,7 +307,7 @@ module Chat {
 
         $chatText = cu.FindElement('#chatText');
 
-        $chatText.perfectScrollbar({suppressScrollX:false});
+        $chatText.perfectScrollbar({suppressScrollX:true});
         $chatText.scroll(OnChatTextScroll);
 
         cu.Listen('OnChat', OnChat);

@@ -69,10 +69,14 @@
     <Content Include="images\skillbar\bar_skills_plate.png" />
     <Content Include="images\skillbar\ActiveFrame.gif" />
     <Content Include="images\skillbar\NextArrow.png" />
+    <Content Include="images\skills\bar_skills_earth.png" />
+    <Content Include="images\skills\bar_skills_fire.png" />
     <Content Include="images\skills\bar_skills_icon1.png" />
     <Content Include="images\skills\bar_skills_icon2.png" />
     <Content Include="images\skills\bar_skills_icon3.png" />
     <Content Include="images\skills\bar_skills_icon4.png" />
+    <Content Include="images\skills\bar_skills_steam.png" />
+    <Content Include="images\skills\bar_skills_water.png" />
     <Content Include="images\target\target_plate.png" />
     <Content Include="index.html" />
     <Content Include="index\index.css" />
