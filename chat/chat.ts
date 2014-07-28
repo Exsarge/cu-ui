@@ -15,6 +15,7 @@ module Chat {
     var $chatText: JQuery;
     var hasScrolled = false;
     var lastTellFrom: JID = null;
+    var chatCommandHistory: ChatCommandHistory = new ChatCommandHistory();
 
     function AppendChat(chatBody, iconClass) {
         // This appends the chat item and escapes it
@@ -95,27 +96,26 @@ module Chat {
     }
 
     function OnSubmitChat(event) {
-        // when enter key is pressed
-        if (event.which == 13) {
-            var body = $chatInput.val();
-            var commandMode = $chatInput.attr('data-command-mode') || '0';
-            if (body && body.length) {
-                if (event.shiftKey || commandMode == '1') {
-                    var command = $('<div/>').text(body).addClass('consoleBody command');
-                    AppendChat(command, null);
-                    cu.ConsoleCommand(body);
-                } else {
-                    ProcessCommandLine(body, event);
-                }
+        var body = $chatInput.val();
+        var commandMode = $chatInput.attr('data-command-mode') || '0';
+        if (body && body.length) {
+            if (event.shiftKey || commandMode == '1') {
+                var command = $('<div/>').text(body).addClass('consoleBody command');
+                AppendChat(command, null);
+                cu.ConsoleCommand(body);
+            } else {
+                ProcessCommandLine(body, event);
+                chatCommandHistory.add(body);
+                    
             }
-            $chatInput.val('');
-            if (event.shiftKey) {
-                if (commandMode == '0') {
-                    SetTextEntryMode(1);
-                } else {
-                    SetTextEntryMode(0);
-                    $chatInput.blur();
-                }
+        }
+        $chatInput.val('');
+        if (event.shiftKey) {
+            if (commandMode == '0') {
+                SetTextEntryMode(1);
+            } else {
+                SetTextEntryMode(0);
+                $chatInput.blur();
             }
         }
     }
@@ -184,7 +184,9 @@ module Chat {
                 }
                 to = processed.args[0] + '@' + cu.CHAT_SERVICE;
                 body = EverythingAfterArg(input, processed, 0);
-                cuAPI.JoinMUC(processed.args[0])
+                if (typeof cuAPI !== "undefined") {
+                    cuAPI.JoinMUC(processed.args[0])
+                }
                 cu.SendChat(XmppMessageType.GROUPCHAT, to, body);
                 return true;
             case '/quit':
@@ -307,14 +309,36 @@ module Chat {
 
         $chatText = cu.FindElement('#chatText');
 
-        $chatText.perfectScrollbar({suppressScrollX:true});
+        $chatText.perfectScrollbar({ suppressScrollX: true });
         $chatText.scroll(OnChatTextScroll);
 
         cu.Listen('OnChat', OnChat);
         cu.Listen('OnBeginChat', OnBeginChat);
         cu.Listen('XmppAuthFailed', () => OnConsoleText('Login failed'));
 
-        $chatInput.keydown(OnSubmitChat);
+        $chatInput.on("keydown", (e) => {
+            switch (e.which) {
+                case 38:
+                    if (chatCommandHistory.hasPrev()) {
+                        $chatInput.val(chatCommandHistory.prev());
+                        
+                    }
+                    // Preventing chrome to go to the start of the text input, there is a pos1 button on the keyboard for this...
+                    e.preventDefault();
+                    break;
+                case 40:
+                    if (chatCommandHistory.hasNext()) {
+                        $chatInput.val(chatCommandHistory.next());
+                    }
+                    break;
+                case 13:
+                    chatCommandHistory.setLastEntry("");
+                    OnSubmitChat(e);
+                default: 
+                    chatCommandHistory.setLastEntry($chatInput.val());
+                    
+            }
+        });
 
         $chatInput.focus(OnFocus);
         $chatInput.blur(OnBlur);
