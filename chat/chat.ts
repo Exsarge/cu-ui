@@ -162,6 +162,7 @@ module Chat {
         var processed = $.terminal.parseCommand(input);
         var to;
         var body;
+        var name;
         switch (processed.name) {
             case '/join':
                 if (processed.args.length < 1) {
@@ -227,7 +228,10 @@ module Chat {
                     return false;
                 }
                 var name:string = processed.args[0];
-                cuAPI.OpenUI(name + ".ui");
+                if (name.indexOf('.ui') === -1) {
+                    name = name + '.ui';
+                }
+                cuAPI.OpenUI(name);
                 return true;
             case '/connect':
                 if (cu.HasAPI()) return false;
@@ -253,6 +257,15 @@ module Chat {
                 var loginToken: string = processed.args[0];
                 console.log("Disconnecting from chat");
                 Chat.Disconnect();
+                return true;
+            case '/closeui':
+                if (processed.args.length < 1) return false;
+                name = processed.args[0];
+                var uiIndex = name.indexOf('.ui');
+                if (uiIndex !== -1) {
+                    name = name.substring(0, uiIndex);
+                }
+                cuAPI.CloseUI(name);
                 return true;
             default:
                 OnConsoleText("Unknown command. Use /help for a list of commands");
