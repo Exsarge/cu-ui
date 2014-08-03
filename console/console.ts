@@ -155,7 +155,6 @@ module Console {
         // If we don't have a leading slash or we held shift while sending the command,
         // we just send a chat message to the default channel (global for now)
         if (input.substring(0, 1) != '/' || event.shiftKey) {
-            cu.SendChat(XmppMessageType.GROUPCHAT, cu.UIDEV2, input);
             return true;
         }
 
@@ -200,7 +199,7 @@ module Console {
                 if (typeof cuAPI !== "undefined") {
                     cuAPI.JoinMUC(processed.args[0])
                 }
-                cu.SendChat(XmppMessageType.GROUPCHAT, to, body, true);
+                cu.SendChat(XmppMessageType.GROUPCHAT, to, body);
                 return true;
                         
             case '/quit':
@@ -308,7 +307,7 @@ module Console {
         jid.EnsureHasDomain();
 
         cu.CreateWebSocket(loginToken, jid.domain,
-            () => cu.JoinRoomAsCurrentUser(cu.UIDEV2),
+            () => cu.JoinRoomAsCurrentUser(cu.GLOBAL_CHATROOM),
             () => OnConsoleText('Connected to chat!'));
     }
 
