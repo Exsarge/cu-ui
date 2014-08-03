@@ -22,6 +22,8 @@
     <TypeScriptCompile Include="character\character.ts" />
     <Content Include="chat\chat.css" />
     <Content Include="chat\chat.html" />
+    <Content Include="console\console.css" />
+    <Content Include="console\console.html" />
     <Content Include="cu\cu.css" />
     <Content Include="errormessages\errormessages.css" />
     <Content Include="errormessages\errormessages.html" />
@@ -83,6 +85,8 @@
     <Content Include="kills\kills.css" />
     <Content Include="kills\kills.html" />
     <TypeScriptCompile Include="chat\chatcommandhistory.ts" />
+    <None Include="console.ui" />
+    <TypeScriptCompile Include="console\console.ts" />
     <TypeScriptCompile Include="index\index.ts" />
     <TypeScriptCompile Include="kills\kills.ts" />
     <Content Include="login\login.css" />
